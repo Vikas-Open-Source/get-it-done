@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+  title: Task List API
+  description: API for managing tasks list
+  version: 0.0.1
+servers:
+  - url: '{host}/api'
+    variables:
+      host:
+        default: http://localhost:8080
+paths:
+  /tasks/v1:
+    get:
+      summary: Get all tasks
+      description: Retrieve a list of all tasks
+      parameters:
+        - in: query
+          required: false
+          name: directory
+          schema:
+            $ref: '#/components/schemas/directory'
+          description: Filter tasks by directory
+      responses:
+        '200':
+          description: A list of all tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/task'
+        '400':
+          $ref: '#/components/responses/badRequest'
+    post:
+      summary: Create a new task
+      description: Add a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/task'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/task'
+  /tasks/v1/{id}:
+    get:
+      summary: Get a task by ID
+      description: Retrieve a specific task by its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/task'
+        '400':
+          $ref: '#/components/responses/badRequest'
+    put:
+      summary: Update a task
+      description: Update the details of an existing task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/task'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/task'
+        '400':
+          $ref: '#/components/responses/badRequest'
+    delete:
+      summary: Delete a task
+      description: Remove a task from the list
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Task deleted successfully
+        '400':
+          $ref: '#/components/responses/badRequest'
+components:
+  schemas:
+    task:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        directory:
+          $ref: '#/components/schemas/directory'
+        createdDate:
+          type: string
+          format: date-time
+        updatedDate:
+          type: string
+          format: date-time
+        completeByDate:
+          type: string
+          format: date-time
+    directory:
+      id:
+        type: string
+      name:
+        type: string
+      createdDate:
+        type: string
+        format: date-time
+      updatedDate:
+        type: string
+        format: date-time
+  responses:
+    badRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
