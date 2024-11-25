@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Directory API
-  description: API for managing directories
+  title: Task List API
+  description: API for managing tasks list
   version: 0.0.1
 servers:
   - url: '{host}/api'
@@ -9,26 +9,26 @@ servers:
       host:
         default: http://localhost:8080
 paths:
-  /directories/v1:
+  /directories/{directoryId}/tasks/v1:
     get:
-      summary: Get all directories
-      description: Retrieve a list of all directories
+      summary: Get all tasks
+      description: Retrieve a list of all tasks
       parameters:
-        - in: query
+        - in: path
           required: false
-          name: user
+          name: directoryId
           schema:
-            $ref: '#/components/schemas/UserV1'
-          description: Filter directories by user
+            type: string
+          description: Filter tasks by directory id
       responses:
         '200':
-          description: A list of all directories
+          description: A list of all tasks
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DirectoryV1'
+                  $ref: '#/components/schemas/TaskV1'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -38,44 +38,44 @@ paths:
         '5XX':
           $ref: '#/components/responses/ServerError'
     post:
-      summary: Create a new directory
-      description: Add a new directory
+      summary: Create a new task
+      description: Add a new task
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DirectoryV1'
+              $ref: '#/components/schemas/TaskV1'
       responses:
         '201':
-          description: Directory created successfully
+          description: Task created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectoryV1'
+                $ref: '#/components/schemas/TaskV1'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '5XX':
           $ref: '#/components/responses/ServerError'
-  /directories/v1/{directoryId}:
+  /directories/{directoryId}/tasks/v1/{taskId}:
     get:
-      summary: Get a directory by ID
-      description: Retrieve a specific directory by its ID
+      summary: Get a task by ID
+      description: Retrieve a specific task by its ID
       parameters:
         - in: path
-          name: directoryId
+          name: taskId
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Directory details
+          description: Task details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectoryV1'
+                $ref: '#/components/schemas/TaskV1'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -85,11 +85,11 @@ paths:
         '5XX':
           $ref: '#/components/responses/ServerError'
     put:
-      summary: Update a directory
-      description: Update the details of an existing directory
+      summary: Update a task
+      description: Update the details of an existing task
       parameters:
         - in: path
-          name: directoryId
+          name: taskId
           required: true
           schema:
             type: string
@@ -98,14 +98,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DirectoryV1'
+              $ref: '#/components/schemas/TaskV1'
       responses:
         '200':
-          description: Directory updated successfully
+          description: Task updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectoryV1'
+                $ref: '#/components/schemas/TaskV1'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -115,17 +115,17 @@ paths:
         '5XX':
           $ref: '#/components/responses/ServerError'
     delete:
-      summary: Delete a directory
-      description: Remove a directory
+      summary: Delete a task
+      description: Remove a task from the list
       parameters:
         - in: path
-          name: directoryId
+          name: taskId
           required: true
           schema:
             type: string
       responses:
         '204':
-          description: Directory deleted successfully
+          description: Task deleted successfully
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -136,28 +136,40 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    DirectoryV1:
+    TaskV1:
       type: object
       properties:
-        directoryId:
+        taskId:
           type: string
           example: 1
         name:
           type: string
-          example: work
-        createdTimestamp:
+          example: Shopping
+        description:
+          type: string
+          example: Buy kitkat
+        directory:
+          $ref: '#/components/schemas/DirectoryV1'
+        assignee:
+          $ref: '#/components/schemas/UserV1'
+        createdDate:
           type: string
           format: date-time
-          example: "2024-11-22T16:29:00Z"
-        updatedTimestamp:
+          example: "2024-11-22"
+        updatedDate:
           type: string
           format: date-time
-          example: "2024-11-22T16:30:00Z"
+          example: "2024-11-22"
+        completeByDate:
+          type: string
+          format: date-time
+          example: "2024-11-23"
       required:
-        - directoryId
+        - taskId
         - name
-        - createdTimestamp
-        - updatedTimestamp
+        - directory
+        - createdDate
+        - updatedDate
     Error:
       type: object
       properties:

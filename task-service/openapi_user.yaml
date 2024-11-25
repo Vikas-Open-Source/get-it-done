@@ -19,24 +19,36 @@ paths:
           parameters:
             - in: query
               required: false
-              name: directory
+              name: userId
               schema:
-                $ref: '#/components/schemas/directory'
-              description: Filter users by directory
+                type: string
+              description: Filter users by user id
             - in: query
               required: false
-              name: task
+              name: directoryId
               schema:
-                $ref: '#/components/schemas/task'
-              description: Filter users by task
+                type: string
+              description: Filter users by directory id
+            - in: query
+              required: false
+              name: taskId
+              schema:
+                type: string
+              description: Filter users by task id
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/user'
+                  $ref: '#/components/schemas/UserV1'
         '400':
-          $ref: '#/components/responses/badRequest'
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
     post:
       summary: Create a new user
       description: Add a new user
@@ -45,21 +57,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/user'
+              $ref: '#/components/schemas/UserV1'
       responses:
         '201':
           description: User created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
-  /users/v1/{id}:
+                $ref: '#/components/schemas/UserV1'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+  /users/v1/{userId}:
     get:
       summary: Get a user by ID
       description: Retrieve a specific user by its ID
       parameters:
         - in: path
-          name: id
+          name: userId
           required: true
           schema:
             type: string
@@ -69,15 +85,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
+                $ref: '#/components/schemas/UserV1'
         '400':
-          $ref: '#/components/responses/badRequest'
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
     put:
       summary: Update a user
       description: Update the details of an existing user
       parameters:
         - in: path
-          name: id
+          name: userId
           required: true
           schema:
             type: string
@@ -86,22 +108,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/user'
+              $ref: '#/components/schemas/UserV1'
       responses:
         '200':
           description: User updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
+                $ref: '#/components/schemas/UserV1'
         '400':
-          $ref: '#/components/responses/badRequest'
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
     delete:
       summary: Delete a user
       description: Remove a user
       parameters:
         - in: path
-          name: id
+          name: userId
           required: true
           schema:
             type: string
@@ -109,26 +137,63 @@ paths:
         '204':
           description: User deleted successfully
         '400':
-          $ref: '#/components/responses/badRequest'
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    user:
-      id:
-        type: string
-      name:
-        type: string
-      email:
-        type: string
-      createdDate:
-        type: string
-        format: date-time
-      updatedDate:
-        type: string
-        format: date-time
+    UserV1:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: "john"
+        email:
+          type: string
+          example: "john.doe@gmail.com"
+        createdDate:
+          type: string
+          format: date-time
+          example: "2024-11-23"
+        updatedDate:
+          type: string
+          format: date-time
+          example: "2024-11-23"
+      required:
+        - userId
+        - name
+        - email
+        - createdDate
+        - updatedDate
   responses:
-    badRequest:
+    BadRequest:
       description: Bad request
       content:
         application/json:
           schema:
-            type: object
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
