@@ -1,12 +1,3 @@
-openapi: 3.0.3
-info:
-  title: List of Errors
-  version: 0.0.1
-servers:
-  - url: '{host}/api'
-    variables:
-      host:
-        default: http://localhost:8080
 components:
   schemas:
     Error:
