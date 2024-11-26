@@ -1,0 +1,141 @@
+openapi: 3.0.3
+info:
+  title: Directory API
+  description: API for managing directories
+  version: 0.0.1
+servers:
+  - url: '{host}/api'
+    variables:
+      host:
+        default: http://localhost:8080
+paths:
+  /directories/v1:
+    get:
+      summary: Get all directories
+      description: Retrieve a list of all directories
+      responses:
+        '200':
+          description: A list of all directories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DirectoryV1'
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: 'errors.yaml#/components/responses/NotFound'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+    post:
+      summary: Create a new directory
+      description: Create a new directory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectoryV1'
+      responses:
+        '201':
+          description: Directory created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectoryV1'
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+  /directories/v1/{directoryId}:
+    parameters:
+      - $ref: '#/components/parameters/directoryId'
+    get:
+      summary: Get a directory by ID
+      description: Retrieve a specific directory by its ID
+      responses:
+        '200':
+          description: Directory details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectoryV1'
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: 'errors.yaml#/components/responses/NotFound'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+    put:
+      summary: Update a directory
+      description: Update the details of an existing directory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectoryV1'
+      responses:
+        '200':
+          description: Directory updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectoryV1'
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: 'errors.yaml#/components/responses/NotFound'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+    delete:
+      summary: Delete a directory
+      description: Delete a directory
+      responses:
+        '204':
+          description: Directory deleted successfully
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: 'errors.yaml#/components/responses/NotFound'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+components:
+  schemas:
+    DirectoryV1:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "dir001"
+        name:
+          type: string
+          example: "shop"
+        createdTimestamp:
+          type: string
+          format: date-time
+          example: "2024-11-22T16:29:00Z"
+        updatedTimestamp:
+          type: string
+          format: date-time
+          example: "2024-11-22T16:30:00Z"
+      required:
+        - id
+        - name
+  parameters:
+    directoryId:
+      name: directoryId
+      in: path
+      required: true
+      schema:
+        type: string

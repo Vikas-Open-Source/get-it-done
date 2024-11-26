@@ -1,0 +1,172 @@
+openapi: 3.0.3
+info:
+  title: Task List API
+  description: API for managing tasks list
+  version: 0.0.1
+servers:
+  - url: '{host}/api'
+    variables:
+      host:
+        default: http://localhost:8080
+paths:
+  /directories/{directoryId}/tasks/v1:
+    parameters:
+      - $ref: '#/components/parameters/directoryId'
+    get:
+      summary: Get all tasks
+      description: Retrieve a list of all tasks
+      parameters:
+        - in: query
+          name: userId
+          required: false
+          schema:
+            type: string
+          description: Filter tasks by user id
+      responses:
+        '200':
+          description: A list of all tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskV1'
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: 'errors.yaml#/components/responses/NotFound'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+    post:
+      summary: Create a new task
+      description: Add a new task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskV1'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskV1'
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+  /directories/{directoryId}/tasks/v1/{taskId}:
+    parameters:
+      - $ref: '#/components/parameters/directoryId'
+      - $ref: '#/components/parameters/taskId'
+    get:
+      summary: Get a task by ID
+      description: Retrieve a specific task by its ID
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskV1'
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: 'errors.yaml#/components/responses/NotFound'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+    put:
+      summary: Update a task
+      description: Update the details of an existing task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskV1'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskV1'
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: 'errors.yaml#/components/responses/NotFound'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+    delete:
+      summary: Delete a task
+      description: Delete a task
+      responses:
+        '204':
+          description: Task deleted successfully
+        '400':
+          $ref: 'errors.yaml#/components/responses/BadRequest'
+        '401':
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: 'errors.yaml#/components/responses/NotFound'
+        '500':
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
+components:
+  schemas:
+    TaskV1:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "tsk001"
+        name:
+          type: string
+          example: "Shopping"
+        description:
+          type: string
+          example: "Buy kitkat"
+        directoryId:
+          type: string
+          example: "dir001"
+          description: "The directory under which this task in put"
+        userId:
+          type: string
+          example: "usr001"
+          description: "The user whom this task is assigned to"
+        createdTimestamp:
+          type: string
+          format: date-time
+          example: "2024-11-22T16:29:00Z"
+        updatedTimestamp:
+          type: string
+          format: date-time
+          example: "2024-11-22T16:29:00Z"
+        completeByTimestamp:
+          type: string
+          format: date-time
+          example: "2024-11-22T16:29:00Z"
+      required:
+        - id
+        - name
+        - directoryId
+  parameters:
+    taskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
+    directoryId:
+      name: directoryId
+      in: path
+      required: true
+      schema:
+        type: string
