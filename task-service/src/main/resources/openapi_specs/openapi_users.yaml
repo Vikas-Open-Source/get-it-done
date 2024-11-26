@@ -127,14 +127,14 @@ components:
         email:
           type: string
           example: "john.doe@gmail.com"
-        createdDate:
+        createdTimestamp:
           type: string
           format: date-time
-          example: "2024-11-23"
-        updatedDate:
+          example: "2024-11-22T16:29:00Z"
+        updatedTimestamp:
           type: string
           format: date-time
-          example: "2024-11-23"
+          example: "2024-11-22T16:29:00Z"
       required:
         - id
         - name
