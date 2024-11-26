@@ -23,13 +23,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/UserV1'
         '400':
-          $ref: 'openapi_errors.yaml#/components/responses/BadRequest'
+          $ref: 'errors.yaml#/components/responses/BadRequest'
         '401':
-          $ref: 'openapi_errors.yaml#/components/responses/Unauthorized'
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
         '404':
-          $ref: 'openapi_errors.yaml#/components/responses/NotFound'
+          $ref: 'errors.yaml#/components/responses/NotFound'
         '500':
-          $ref: 'openapi_errors.yaml#/components/responses/InternalServerError'
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
     post:
       summary: Create a new user
       description: Add a new user
@@ -46,17 +46,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserV1'
         '400':
-          $ref: 'openapi_errors.yaml#/components/responses/BadRequest'
+          $ref: 'errors.yaml#/components/responses/BadRequest'
         '401':
-          $ref: 'openapi_errors.yaml#/components/responses/Unauthorized'
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
         '500':
-          $ref: 'openapi_errors.yaml#/components/responses/InternalServerError'
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
   /users/v1/{userId}:
+    parameters:
+      - $ref: '#/components/parameters/userId'
     get:
       summary: Get a user by ID
       description: Retrieve a specific user by its ID
-      parameters:
-        - $ref: '#/components/parameters/UserId'
       responses:
         '200':
           description: User details
@@ -65,18 +65,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserV1'
         '400':
-          $ref: 'openapi_errors.yaml#/components/responses/BadRequest'
+          $ref: 'errors.yaml#/components/responses/BadRequest'
         '401':
-          $ref: 'openapi_errors.yaml#/components/responses/Unauthorized'
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
         '404':
-          $ref: 'openapi_errors.yaml#/components/responses/NotFound'
+          $ref: 'errors.yaml#/components/responses/NotFound'
         '500':
-          $ref: 'openapi_errors.yaml#/components/responses/InternalServerError'
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
     put:
       summary: Update a user
       description: Update the details of an existing user
-      parameters:
-        - $ref: '#/components/parameters/UserId'
       requestBody:
         content:
           application/json:
@@ -90,29 +88,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserV1'
         '400':
-          $ref: 'openapi_errors.yaml#/components/responses/BadRequest'
+          $ref: 'errors.yaml#/components/responses/BadRequest'
         '401':
-          $ref: 'openapi_errors.yaml#/components/responses/Unauthorized'
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
         '404':
-          $ref: 'openapi_errors.yaml#/components/responses/NotFound'
+          $ref: 'errors.yaml#/components/responses/NotFound'
         '500':
-          $ref: 'openapi_errors.yaml#/components/responses/InternalServerError'
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
     delete:
       summary: Delete a user
       description: Delete a user
-      parameters:
-        - $ref: '#/components/parameters/UserId'
       responses:
         '204':
           description: User deleted successfully
         '400':
-          $ref: 'openapi_errors.yaml#/components/responses/BadRequest'
+          $ref: 'errors.yaml#/components/responses/BadRequest'
         '401':
-          $ref: 'openapi_errors.yaml#/components/responses/Unauthorized'
+          $ref: 'errors.yaml#/components/responses/Unauthorized'
         '404':
-          $ref: 'openapi_errors.yaml#/components/responses/NotFound'
+          $ref: 'errors.yaml#/components/responses/NotFound'
         '500':
-          $ref: 'openapi_errors.yaml#/components/responses/InternalServerError'
+          $ref: 'errors.yaml#/components/responses/InternalServerError'
 components:
   schemas:
     UserV1:
@@ -120,7 +116,8 @@ components:
       properties:
         id:
           type: string
-          example: "1"
+          example: "usr001"
+          description:
         name:
           type: string
           example: "john"
@@ -140,7 +137,7 @@ components:
         - name
         - email
   parameters:
-    UserId:
+    userId:
       name: userId
       in: path
       required: true
