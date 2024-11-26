@@ -51,7 +51,7 @@ tasks.register("generateOpenApiCode") {
 	}
 }
 
-sourceSets.main.java.srcDir "${outputDir.get()}/generated"
+sourceSets.main.java.srcDir("build/generated")
 
 compileJava {
 	dependsOn tasks.named("generateOpenApiCode")
